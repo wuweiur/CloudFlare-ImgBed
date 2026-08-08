@@ -26,14 +26,12 @@ on:
 # 可选：
 #   R2_BUCKET_NAME        - R2 存储桶名称
 #   WORKER_NAME           - Worker 名称（默认 cloudflare-imgbed，手动触发时可在界面覆盖）
-#   WORKER_VARS           - JSON 格式的业务环境变量（非必要不建议配置，
-#                           部署完成后请在管理面板中配置所有设置）
+#   WORKER_VARS           - JSON 格式的业务环境变量
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     # 仅在 fork 仓库且配置了 Cloudflare secrets 时运行
-    # 原仓库 push 和未配置 secrets 的 fork 不会触发部署
     if: ${{ github.event.repository.fork }}
     steps:
       - name: Check deployment config
@@ -48,11 +46,11 @@ jobs:
 
       - name: Checkout
         if: steps.check.outputs.skip != 'true'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         if: steps.check.outputs.skip != 'true'
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
 
@@ -80,5 +78,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: '4'
+          wranglerVersion: '3'
           command: deploy --config deploy/worker/wrangler.toml
